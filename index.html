@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>ASCII 查表工具 - 程式設計人員計算機 | 進制轉換器</title>
+    <meta name="description" content="免費的 ASCII 碼查詢工具，支援 HEX、DEC、OCT、BIN 進制轉換，64-bit 計算機功能，程式設計人員必備工具。">
+    <meta name="keywords" content="ASCII, 查表, 進制轉換, HEX, 十六進位, 計算機, 程式設計, 字元編碼, ASCII table, programmer calculator">
+    <meta name="author" content="Your Name">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="zh-TW">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://你的用戶名.github.io/ascii-calculator/">
+    <meta property="og:title" content="ASCII 查表工具 - 程式設計人員計算機">
+    <meta property="og:description" content="免費的 ASCII 碼查詢工具，支援多種進制轉換和計算功能">
+    <meta property="og:image" content="https://你的用戶名.github.io/ascii-calculator/preview.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://你的用戶名.github.io/ascii-calculator/">
+    <meta property="twitter:title" content="ASCII 查表工具 - 程式設計人員計算機">
+    <meta property="twitter:description" content="免費的 ASCII 碼查詢工具，支援多種進制轉換和計算功能">
+    <meta property="twitter:image" content="https://你的用戶名.github.io/ascii-calculator/preview.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://你的用戶名.github.io/ascii-calculator/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔤</text></svg>">
+    
+    <!-- Google Analytics (GA4) -->
+    <!-- 替換 G-XXXXXXXXXX 為你的 Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ASCII 查表工具",
+        "description": "免費的 ASCII 碼查詢工具，支援 HEX、DEC、OCT、BIN 進制轉換",
+        "url": "https://你的用戶名.github.io/ascii-calculator/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "softwareVersion": "1.0",
+        "author": {
+            "@type": "Person",
+            "name": "Your Name"
+        }
+    }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #202020;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #1f1f1f;
+            padding: 10px 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-icon {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .title {
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .display-area {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .char-display {
+            text-align: right;
+            font-size: 72px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            min-height: 90px;
+            font-family: 'Consolas', monospace;
+            color: #ffffff;
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #404040;
+        }
+
+        .format-tab {
+            flex: 1;
+            padding: 12px 0;
+            background: transparent;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: left;
+            padding-left: 15px;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .format-tab.active {
+            color: #60cdff;
+            border-bottom: 2px solid #60cdff;
+        }
+
+        .format-tab:hover:not(.active) {
+            background: #333;
+        }
+
+        .value-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            padding: 8px 15px;
+        }
+
+        .value-display.active .value-content {
+            color: #60cdff;
+            font-weight: 600;
+        }
+
+        .value-label {
+            font-size: 12px;
+            color: #999;
+            width: 60px;
+        }
+
+        .value-display.active .value-label {
+            color: #60cdff;
+        }
+
+        .value-content {
+            font-size: 20px;
+            font-family: 'Consolas', monospace;
+            flex: 1;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .value-content:hover {
+            color: #60cdff;
+        }
+
+        .keypad {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            max-height: 400px;
+        }
+
+        .key-btn {
+            background: #3b3b3b;
+            border: 1px solid #404040;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.1s;
+            font-family: 'Consolas', monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .key-btn:hover {
+            background: #4a4a4a;
+        }
+
+        .key-btn:active {
+            background: #333;
+        }
+
+        .key-btn.hex-letter {
+            color: #60cdff;
+        }
+
+        .key-btn.operator {
+            background: #2d2d2d;
+        }
+
+        .key-btn.special {
+            font-size: 14px;
+        }
+
+        .key-btn.equals {
+            background: #0078d4;
+        }
+
+        .key-btn.equals:hover {
+            background: #106ebe;
+        }
+
+        .bottom-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: #2d2d2d;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        .mode-btn {
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid #404040;
+            color: #999;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .mode-btn.active {
+            border-color: #60cdff;
+            color: #60cdff;
+        }
+
+        /* 廣告容器樣式 */
+        .ad-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .char-display {
+                font-size: 48px;
+            }
+            
+            .keypad {
+                gap: 3px;
+            }
+            
+            .key-btn {
+                min-height: 45px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="menu-icon">☰</div>
+        <div class="title">程式設計人員</div>
+    </div>
+
+    <div class="container">
+        <div class="display-area">
+            <div class="char-display" id="charDisplay">0</div>
+            
+            <div class="format-tabs">
+                <button class="format-tab" data-format="char">CHAR</button>
+                <button class="format-tab active" data-format="hex">HEX</button>
+                <button class="format-tab" data-format="dec">DEC</button>
+                <button class="format-tab" data-format="oct">OCT</button>
+                <button class="format-tab" data-format="bin">BIN</button>
+            </div>
+
+            <div class="value-display" data-format="char">
+                <span class="value-label">CHAR</span>
+                <span class="value-content char-value" id="charValue">NUL</span>
+            </div>
+            <div class="value-display" data-format="hex">
+                <span class="value-label">HEX</span>
+                <span class="value-content" id="hexValue">0</span>
+            </div>
+            <div class="value-display" data-format="dec">
+                <span class="value-label">DEC</span>
+                <span class="value-content" id="decValue">0</span>
+            </div>
+            <div class="value-display" data-format="oct">
+                <span class="value-label">OCT</span>
+                <span class="value-content" id="octValue">0</span>
+            </div>
+            <div class="value-display" data-format="bin">
+                <span class="value-label">BIN</span>
+                <span class="value-content" id="binValue">00000000</span>
+            </div>
+        </div>
+
+        <div class="keypad" id="keypad">
+            <button class="key-btn hex-letter" data-value="A">A</button>
+            <button class="key-btn operator" data-value="<<">&laquo;</button>
+            <button class="key-btn operator" data-value=">>">&raquo;</button>
+            <button class="key-btn operator" data-value="C">C</button>
+            <button class="key-btn special" data-value="back">⌫</button>
+
+            <button class="key-btn hex-letter" data-value="B">B</button>
+            <button class="key-btn operator" data-value="(">(</button>
+            <button class="key-btn operator" data-value=")">)</button>
+            <button class="key-btn operator" data-value="%">%</button>
+            <button class="key-btn operator" data-value="/">÷</button>
+
+            <button class="key-btn hex-letter" data-value="C">C</button>
+            <button class="key-btn" data-value="7">7</button>
+            <button class="key-btn" data-value="8">8</button>
+            <button class="key-btn" data-value="9">9</button>
+            <button class="key-btn operator" data-value="*">×</button>
+
+            <button class="key-btn hex-letter" data-value="D">D</button>
+            <button class="key-btn" data-value="4">4</button>
+            <button class="key-btn" data-value="5">5</button>
+            <button class="key-btn" data-value="6">6</button>
+            <button class="key-btn operator" data-value="-">−</button>
+
+            <button class="key-btn hex-letter" data-value="E">E</button>
+            <button class="key-btn" data-value="1">1</button>
+            <button class="key-btn" data-value="2">2</button>
+            <button class="key-btn" data-value="3">3</button>
+            <button class="key-btn operator" data-value="+">+</button>
+
+            <button class="key-btn hex-letter" data-value="F">F</button>
+            <button class="key-btn operator" data-value="+/-">±</button>
+            <button class="key-btn" data-value="0">0</button>
+            <button class="key-btn" data-value=".">.</button>
+            <button class="key-btn equals" data-value="=">=</button>
+        </div>
+
+        <div class="bottom-bar">
+            <button class="mode-btn active">QWORD</button>
+            <button class="mode-btn">DWORD</button>
+            <button class="mode-btn">WORD</button>
+            <button class="mode-btn">BYTE</button>
+            <div style="flex: 1"></div>
+            <a href="privacy.html" style="color: #999; text-decoration: none; font-size: 11px; display: flex; align-items: center;">隱私政策</a>
+        </div>
+    </div>
+
+    <!-- Google AdSense 廣告區域 -->
+    <!-- 在獲得流量後，申請 Google AdSense 並替換以下代碼 -->
+    <div class="ad-container" id="ad-container">
+        <!-- 橫幅廣告 (取消註解並替換為你的廣告代碼) -->
+        <!--
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="XXXXXXXXXX"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        -->
+    </div>
+
+    <script>
+        let currentValue = 0n; // 使用 BigInt 支援大數
+        let currentFormat = 'hex';
+        let inputBuffer = '';
+        let operator = null;
+        let previousValue = null;
+        let shouldResetOnNextInput = false;
+        let maxBits = 64; // 預設 64-bit (QWORD)
+
+        const asciiDescriptions = {
+            0: 'NUL', 1: 'SOH', 2: 'STX', 3: 'ETX', 4: 'EOT', 5: 'ENQ', 6: 'ACK', 7: 'BEL',
+            8: 'BS', 9: 'TAB', 10: 'LF', 11: 'VT', 12: 'FF', 13: 'CR', 14: 'SO', 15: 'SI',
+            16: 'DLE', 17: 'DC1', 18: 'DC2', 19: 'DC3', 20: 'DC4', 21: 'NAK', 22: 'SYN', 23: 'ETB',
+            24: 'CAN', 25: 'EM', 26: 'SUB', 27: 'ESC', 28: 'FS', 29: 'GS', 30: 'RS', 31: 'US',
+            32: 'SPACE', 127: 'DEL'
+        };
+
+        function getMaxValue() {
+            // 根據當前模式返回最大值
+            switch (maxBits) {
+                case 8: return 0xFFn; // BYTE
+                case 16: return 0xFFFFn; // WORD
+                case 32: return 0xFFFFFFFFn; // DWORD
+                case 64: return 0xFFFFFFFFFFFFFFFFn; // QWORD
+                default: return 0xFFFFFFFFFFFFFFFFn;
+            }
+        }
+
+        function updateDisplay(value) {
+            // 轉換為 BigInt
+            if (typeof value !== 'bigint') {
+                value = BigInt(value);
+            }
+            
+            // 確保在範圍內
+            const maxValue = getMaxValue();
+            if (value < 0n) value = 0n;
+            if (value > maxValue) value = maxValue;
+            
+            currentValue = value;
+            
+            // 更新字符顯示 (只對 ASCII 範圍有效)
+            const charValueElem = document.getElementById('charValue');
+            if (value <= 127n) {
+                const numValue = Number(value);
+                if (numValue < 32) {
+                    charValueElem.textContent = asciiDescriptions[numValue] || 'CTRL';
+                } else if (numValue === 32) {
+                    charValueElem.textContent = 'SPACE';
+                } else if (numValue === 127) {
+                    charValueElem.textContent = 'DEL';
+                } else {
+                    charValueElem.textContent = String.fromCharCode(numValue);
+                }
+            } else {
+                charValueElem.textContent = '-';
+            }
+            
+            // 更新各種進位顯示
+            const hexStr = value.toString(16).toUpperCase();
+            document.getElementById('hexValue').textContent = hexStr;
+            document.getElementById('decValue').textContent = value.toString();
+            document.getElementById('octValue').textContent = value.toString(8);
+            document.getElementById('binValue').textContent = value.toString(2).padStart(Math.min(Number(value).toString(2).length, maxBits), '0');
+
+            // 更新大字顯示
+            const charDisplay = document.getElementById('charDisplay');
+            if (value <= 127n) {
+                const numValue = Number(value);
+                if (numValue < 32) {
+                    charDisplay.textContent = asciiDescriptions[numValue] || 'CTRL';
+                } else if (numValue === 32) {
+                    charDisplay.textContent = 'SPACE';
+                } else if (numValue === 127) {
+                    charDisplay.textContent = 'DEL';
+                } else {
+                    charDisplay.textContent = String.fromCharCode(numValue);
+                }
+            } else {
+                // 大於 ASCII 範圍，顯示十六進位
+                charDisplay.textContent = hexStr;
+            }
+        }
+
+        function calculate() {
+            if (previousValue === null || operator === null) return;
+            
+            let result;
+            const prev = typeof previousValue === 'bigint' ? previousValue : BigInt(previousValue);
+            const curr = typeof currentValue === 'bigint' ? currentValue : BigInt(currentValue);
+            
+            try {
+                switch (operator) {
+                    case '+':
+                        result = prev + curr;
+                        break;
+                    case '-':
+                        result = prev - curr;
+                        break;
+                    case '*':
+                        result = prev * curr;
+                        break;
+                    case '/':
+                        result = curr !== 0n ? prev / curr : 0n;
+                        break;
+                    case '%':
+                        result = curr !== 0n ? prev % curr : 0n;
+                        break;
+                    case '<<':
+                        result = prev << curr;
+                        break;
+                    case '>>':
+                        result = prev >> curr;
+                        break;
+                    default:
+                        return;
+                }
+                
+                // 確保結果在範圍內
+                const maxValue = getMaxValue();
+                if (result < 0n) result = 0n;
+                if (result > maxValue) result = maxValue;
+                
+                updateDisplay(result);
+            } catch (e) {
+                console.error('計算錯誤:', e);
+                updateDisplay(0n);
+            }
+            
+            previousValue = null;
+            operator = null;
+            shouldResetOnNextInput = true;
+        }
+
+        // 格式切換
+        document.querySelectorAll('.format-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.format-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFormat = tab.getAttribute('data-format');
+                inputBuffer = '';
+                updateKeypadState();
+                
+                // 更新數值顯示的高亮
+                updateValueHighlight();
+            });
+        });
+
+        // 更新數值顯示高亮
+        function updateValueHighlight() {
+            // 移除所有高亮
+            document.querySelectorAll('.value-display').forEach(display => {
+                display.classList.remove('active');
+            });
+            
+            // 添加當前格式的高亮
+            const currentDisplay = document.querySelector(`.value-display[data-format="${currentFormat}"]`);
+            if (currentDisplay) {
+                currentDisplay.classList.add('active');
+            }
+        }
+
+        // 更新鍵盤狀態
+        function updateKeypadState() {
+            document.querySelectorAll('.key-btn').forEach(btn => {
+                const value = btn.getAttribute('data-value');
+                
+                // 根據當前格式禁用/啟用按鈕
+                if (currentFormat === 'char') {
+                    // 字符模式下禁用所有數字鍵盤
+                    if (['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'].includes(value)) {
+                        btn.style.opacity = '0.3';
+                        btn.style.pointerEvents = 'none';
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    }
+                } else if (currentFormat === 'bin') {
+                    // 二進位只能用 0 和 1
+                    if (['2','3','4','5','6','7','8','9','A','B','C','D','E','F'].includes(value)) {
+                        btn.style.opacity = '0.3';
+                        btn.style.pointerEvents = 'none';
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    }
+                } else if (currentFormat === 'oct') {
+                    // 八進位不能用 8, 9, A-F
+                    if (['8','9','A','B','C','D','E','F'].includes(value)) {
+                        btn.style.opacity = '0.3';
+                        btn.style.pointerEvents = 'none';
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    }
+                } else if (currentFormat === 'dec') {
+                    // 十進位不能用 A-F
+                    if (['A','B','C','D','E','F'].includes(value)) {
+                        btn.style.opacity = '0.3';
+                        btn.style.pointerEvents = 'none';
+                    } else {
+                        btn.style.opacity = '1';
+                        btn.style.pointerEvents = 'auto';
+                    }
+                } else {
+                    // 十六進位全部可用
+                    btn.style.opacity = '1';
+                    btn.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        // 按鍵處理
+        document.querySelectorAll('.key-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = btn.getAttribute('data-value');
+                
+                if (value === 'C') {
+                    // 清除
+                    inputBuffer = '';
+                    updateDisplay(0n);
+                    operator = null;
+                    previousValue = null;
+                    shouldResetOnNextInput = false;
+                } else if (value === 'back') {
+                    // 退格
+                    inputBuffer = inputBuffer.slice(0, -1);
+                    if (inputBuffer === '') {
+                        updateDisplay(0n);
+                    } else {
+                        try {
+                            let newValue;
+                            if (getBase() === 16) {
+                                newValue = BigInt('0x' + inputBuffer);
+                            } else {
+                                newValue = BigInt(parseInt(inputBuffer, getBase()));
+                            }
+                            if (newValue <= getMaxValue()) {
+                                updateDisplay(newValue);
+                            }
+                        } catch (e) {
+                            updateDisplay(0n);
+                        }
+                    }
+                } else if (['+', '-', '*', '/', '%', '<<', '>>'].includes(value)) {
+                    // 運算符
+                    if (operator !== null && !shouldResetOnNextInput) {
+                        calculate();
+                    }
+                    operator = value;
+                    previousValue = currentValue;
+                    shouldResetOnNextInput = true;
+                    inputBuffer = '';
+                } else if (value === '=') {
+                    // 等於
+                    calculate();
+                    inputBuffer = '';
+                } else if (value === '+/-') {
+                    // 正負號 - 在無符號整數中，實作為最大值減當前值
+                    updateDisplay(getMaxValue() - currentValue);
+                    inputBuffer = '';
+                } else if (['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'].includes(value)) {
+                    // 數字輸入
+                    if (shouldResetOnNextInput) {
+                        inputBuffer = '';
+                        shouldResetOnNextInput = false;
+                    }
+                    
+                    inputBuffer += value;
+                    try {
+                        let newValue;
+                        if (getBase() === 16) {
+                            newValue = BigInt('0x' + inputBuffer);
+                        } else {
+                            newValue = BigInt(parseInt(inputBuffer, getBase()));
+                        }
+                        
+                        if (newValue <= getMaxValue()) {
+                            updateDisplay(newValue);
+                        } else {
+                            // 超出範圍，移除最後一個字符
+                            inputBuffer = inputBuffer.slice(0, -1);
+                        }
+                    } catch (e) {
+                        inputBuffer = inputBuffer.slice(0, -1);
+                    }
+                }
+            });
+        });
+
+        function getBase() {
+            switch (currentFormat) {
+                case 'char': return 10;
+                case 'hex': return 16;
+                case 'dec': return 10;
+                case 'oct': return 8;
+                case 'bin': return 2;
+                default: return 10;
+            }
+        }
+
+        // 全域鍵盤監聽（支援所有格式）
+        document.addEventListener('keydown', (e) => {
+            // CHAR 模式
+            if (currentFormat === 'char') {
+                // 如果是可打印字符（排除功能鍵）
+                if (e.key.length === 1) {
+                    e.preventDefault();
+                    const code = e.key.charCodeAt(0);
+                    if (code >= 0 && code <= 127) {
+                        updateDisplay(BigInt(code));
+                    }
+                }
+                // 處理特殊鍵
+                else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    updateDisplay(13n); // CR
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    updateDisplay(9n); // TAB
+                } else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    updateDisplay(8n); // BS
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    updateDisplay(27n); // ESC
+                }
+            }
+            // HEX, DEC, OCT, BIN 模式
+            else {
+                // 處理數字和字母鍵
+                let keyValue = e.key.toUpperCase();
+                
+                // 檢查是否為有效的輸入字符
+                let isValidKey = false;
+                
+                if (currentFormat === 'hex') {
+                    isValidKey = /^[0-9A-F]$/.test(keyValue);
+                } else if (currentFormat === 'dec') {
+                    isValidKey = /^[0-9]$/.test(keyValue);
+                } else if (currentFormat === 'oct') {
+                    isValidKey = /^[0-7]$/.test(keyValue);
+                } else if (currentFormat === 'bin') {
+                    isValidKey = /^[0-1]$/.test(keyValue);
+                }
+                
+                if (isValidKey) {
+                    e.preventDefault();
+                    if (shouldResetOnNextInput) {
+                        inputBuffer = '';
+                        shouldResetOnNextInput = false;
+                    }
+                    
+                    inputBuffer += keyValue;
+                    try {
+                        let newValue;
+                        if (getBase() === 16) {
+                            newValue = BigInt('0x' + inputBuffer);
+                        } else {
+                            newValue = BigInt(parseInt(inputBuffer, getBase()));
+                        }
+                        
+                        if (newValue <= getMaxValue()) {
+                            updateDisplay(newValue);
+                        } else {
+                            // 超出範圍，移除最後一個字符
+                            inputBuffer = inputBuffer.slice(0, -1);
+                        }
+                    } catch (e) {
+                        inputBuffer = inputBuffer.slice(0, -1);
+                    }
+                }
+                // 處理特殊按鍵
+                else if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    inputBuffer = inputBuffer.slice(0, -1);
+                    if (inputBuffer === '') {
+                        updateDisplay(0n);
+                    } else {
+                        try {
+                            let newValue;
+                            if (getBase() === 16) {
+                                newValue = BigInt('0x' + inputBuffer);
+                            } else {
+                                newValue = BigInt(parseInt(inputBuffer, getBase()));
+                            }
+                            
+                            if (newValue <= getMaxValue()) {
+                                updateDisplay(newValue);
+                            }
+                        } catch (e) {
+                            updateDisplay(0n);
+                        }
+                    }
+                } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                    if (e.key === 'Escape' || e.ctrlKey) {
+                        e.preventDefault();
+                        inputBuffer = '';
+                        updateDisplay(0n);
+                        operator = null;
+                        previousValue = null;
+                        shouldResetOnNextInput = false;
+                    }
+                } else if (e.key === 'Enter' || e.key === '=') {
+                    e.preventDefault();
+                    calculate();
+                    inputBuffer = '';
+                } else if (['+', '-', '*', '/', '%'].includes(e.key)) {
+                    e.preventDefault();
+                    if (operator !== null && !shouldResetOnNextInput) {
+                        calculate();
+                    }
+                    operator = e.key;
+                    previousValue = currentValue;
+                    shouldResetOnNextInput = true;
+                    inputBuffer = '';
+                }
+            }
+        });
+
+        // 點擊數值複製
+        document.querySelectorAll('.value-content').forEach(elem => {
+            elem.addEventListener('click', () => {
+                const text = elem.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = elem.textContent;
+                    elem.textContent = '已複製!';
+                    setTimeout(() => {
+                        elem.textContent = original;
+                    }, 1000);
+                });
+            });
+        });
+
+        // 底部模式按鈕功能
+        document.querySelectorAll('.mode-btn').forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // 設定最大位元數
+                switch (index) {
+                    case 0: maxBits = 64; break; // QWORD
+                    case 1: maxBits = 32; break; // DWORD
+                    case 2: maxBits = 16; break; // WORD
+                    case 3: maxBits = 8; break;  // BYTE
+                }
+                
+                // 如果當前值超過新的最大值，則截斷
+                if (currentValue > getMaxValue()) {
+                    updateDisplay(getMaxValue());
+                }
+            });
+        });
+
+        // 初始化
+        updateDisplay(0n);
+        updateKeypadState();
+        updateValueHighlight();
+    </script>
+</body>
+</html>

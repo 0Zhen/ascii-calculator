@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap 位置
+Sitemap: https://你的用戶名.github.io/ascii-calculator/sitemap.xml
+
+# 爬蟲延遲（可選）
+Crawl-delay: 1
